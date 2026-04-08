@@ -256,7 +256,7 @@ void main() {
   // ---------------------------------------------------------------------------
 
   group('golden', () {
-    testWidgets('default appearance at 65%', (tester) async {
+    testWidgets('default appearance at 65%', tags: 'golden', (tester) async {
       await tester.pumpWidget(_wrap(
         const SizedBox(
           width: 220,
@@ -270,7 +270,7 @@ void main() {
       );
     });
 
-    testWidgets('appearance at 0%', (tester) async {
+    testWidgets('appearance at 0%', tags: 'golden', (tester) async {
       await tester.pumpWidget(_wrap(
         const SizedBox(
           width: 220,
@@ -287,7 +287,7 @@ void main() {
       );
     });
 
-    testWidgets('appearance at 100%', (tester) async {
+    testWidgets('appearance at 100%', tags: 'golden', (tester) async {
       await tester.pumpWidget(_wrap(
         const SizedBox(
           width: 220,
