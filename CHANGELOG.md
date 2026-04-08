@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+
+- Test release: version and tag alignment for automated publishing (`v0.2.2`).
+
 ## 0.2.1
 
 - Loosen Dart SDK constraint from `^3.11.4` to `^3.0.0` — the package now

@@ -20,7 +20,7 @@ A customizable bordered progress card widget for Flutter.
 
 ```yaml
 dependencies:
-  progress_card: ^0.2.0
+  progress_card: ^0.2.2
 ```
 
 ## Usage
