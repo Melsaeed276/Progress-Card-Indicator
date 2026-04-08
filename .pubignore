@@ -1,0 +1,15 @@
+# Files excluded from the pub.dev package.
+# Dotfiles (.dart_tool, .git, .idea, .github, .DS_Store) and build/ are
+# already excluded automatically by pub — only non-dotfile extras are listed here.
+
+# Screenshots used in the README (binary blobs, not needed by consumers).
+doc/
+
+# IntelliJ project file.
+progress_card.iml
+
+# Dev helper script for launching the example app locally.
+run_example.command
+
+# Internal AI/project notes — not relevant to package consumers.
+CLAUDE.md

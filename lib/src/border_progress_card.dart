@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 /// A content card with a rounded border progress indicator around it.
 ///
 /// The progress border is painted clockwise around a rounded rectangle,
-/// starting near the top-left corner.
+/// starting near the top-left corner. The stroke is drawn with a linear
+/// gradient that sweeps from [progressStartColor] to [progressEndColor]
+/// across the widget's bounding box.
 class BorderProgressCard extends StatelessWidget {
   /// Progress value from `0.0` to `1.0`.
   ///
@@ -23,10 +25,10 @@ class BorderProgressCard extends StatelessWidget {
   /// Must be greater than or equal to `0`.
   final double borderRadius;
 
-  /// Gradient start color for progress.
+  /// Start color of the progress gradient (top-left region of the widget).
   final Color progressStartColor;
 
-  /// Gradient end color for progress.
+  /// End color of the progress gradient (bottom-right region of the widget).
   final Color progressEndColor;
 
   /// Color of the inactive track border.
@@ -37,6 +39,12 @@ class BorderProgressCard extends StatelessWidget {
 
   /// Border color of the inner card.
   final Color innerBorderColor;
+
+  /// Gap in logical pixels between the progress stroke and the inner card.
+  ///
+  /// Defaults to `2`. Increase this to add more breathing room between the
+  /// stroke and the card edge.
+  final double gap;
 
   const BorderProgressCard({
     super.key,
@@ -49,25 +57,24 @@ class BorderProgressCard extends StatelessWidget {
     this.trackColor = const Color(0xFFECECEC),
     this.surfaceColor = Colors.white,
     this.innerBorderColor = const Color(0xFFECECEC),
+    this.gap = 2.0,
   })  : assert(strokeWidth > 0, 'strokeWidth must be greater than 0'),
-        assert(borderRadius >= 0, 'borderRadius must be >= 0');
+        assert(borderRadius >= 0, 'borderRadius must be >= 0'),
+        assert(gap >= 0, 'gap must be >= 0');
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: _RectProgressPainter(
         percentage: percentage.clamp(0.0, 1.0),
-        progressColor: _progressColor(
-          percentage,
-          start: progressStartColor,
-          end: progressEndColor,
-        ),
+        progressStartColor: progressStartColor,
+        progressEndColor: progressEndColor,
         trackColor: trackColor,
         strokeWidth: strokeWidth,
         borderRadius: borderRadius,
       ),
       child: Container(
-        margin: EdgeInsets.all(strokeWidth / 2 + 2),
+        margin: EdgeInsets.all(strokeWidth / 2 + gap),
         decoration: BoxDecoration(
           color: surfaceColor,
           borderRadius: BorderRadius.circular(borderRadius),
@@ -81,14 +88,16 @@ class BorderProgressCard extends StatelessWidget {
 
 class _RectProgressPainter extends CustomPainter {
   final double percentage;
-  final Color progressColor;
+  final Color progressStartColor;
+  final Color progressEndColor;
   final Color trackColor;
   final double strokeWidth;
   final double borderRadius;
 
   const _RectProgressPainter({
     required this.percentage,
-    required this.progressColor,
+    required this.progressStartColor,
+    required this.progressEndColor,
     required this.trackColor,
     required this.strokeWidth,
     required this.borderRadius,
@@ -104,6 +113,7 @@ class _RectProgressPainter extends CustomPainter {
       size.height - strokeWidth,
     );
 
+    // Draw the inactive track.
     canvas.drawRRect(
       RRect.fromRectAndRadius(rect, Radius.circular(borderRadius)),
       Paint()
@@ -114,14 +124,23 @@ class _RectProgressPainter extends CustomPainter {
 
     if (percentage <= 0) return;
 
+    // Build the progress path and extract the filled portion.
     final path = _buildPath(rect, borderRadius);
     final metrics = path.computeMetrics().first;
     final progressPath = metrics.extractPath(0, metrics.length * percentage);
 
+    // Create a linear gradient shader across the full widget bounds so the
+    // gradient is consistent regardless of how much of the stroke is filled.
+    final gradientShader = LinearGradient(
+      colors: [progressStartColor, progressEndColor],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+
     canvas.drawPath(
       progressPath,
       Paint()
-        ..color = progressColor
+        ..shader = gradientShader
         ..style = PaintingStyle.stroke
         ..strokeWidth = strokeWidth
         ..strokeCap = StrokeCap.round,
@@ -149,17 +168,10 @@ class _RectProgressPainter extends CustomPainter {
   @override
   bool shouldRepaint(_RectProgressPainter oldDelegate) {
     return oldDelegate.percentage != percentage ||
-        oldDelegate.progressColor != progressColor ||
+        oldDelegate.progressStartColor != progressStartColor ||
+        oldDelegate.progressEndColor != progressEndColor ||
         oldDelegate.trackColor != trackColor ||
         oldDelegate.strokeWidth != strokeWidth ||
         oldDelegate.borderRadius != borderRadius;
   }
-}
-
-Color _progressColor(
-  double t, {
-  required Color start,
-  required Color end,
-}) {
-  return Color.lerp(start, end, t.clamp(0.0, 1.0))!;
 }

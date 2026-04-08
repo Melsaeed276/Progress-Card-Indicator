@@ -200,7 +200,7 @@ class _ShowcasePageState extends State<ShowcasePage> {
                     TextField(
                       controller: _stepController,
                       decoration: _inputDecoration(),
-                      onChanged: (v) => _stepText = v,
+                      onChanged: (v) => setState(() => _stepText = v),
                     ),
                     const SizedBox(height: 8),
                     TextField(
@@ -221,6 +221,8 @@ class _ShowcasePageState extends State<ShowcasePage> {
               ),
             ),
             const SizedBox(height: 24),
+            const Text('3 — Full-width card with slider'),
+            const SizedBox(height: 12),
             Slider(
               value: _pct34,
               min: 0,
@@ -232,6 +234,37 @@ class _ShowcasePageState extends State<ShowcasePage> {
                 _pct34 / 100,
               ),
               onChanged: (v) => setState(() => _pct34 = v),
+            ),
+            const SizedBox(height: 8),
+            BorderProgressCard(
+              percentage: _pct34 / 100,
+              progressStartColor: _colors.primaryStart,
+              progressEndColor: _colors.primaryEnd,
+              trackColor: _colors.track,
+              surfaceColor: _colors.surface,
+              innerBorderColor: _colors.innerBorder,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Overall progress',
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                    Text(
+                      '${_pct34.round()}%',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.lerp(
+                          _colors.primaryStart,
+                          _colors.primaryEnd,
+                          _pct34 / 100,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
