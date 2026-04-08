@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1
+
+- Loosen Dart SDK constraint from `^3.11.4` to `^3.0.0` — the package now
+  works with any Dart 3.x / Flutter 3.x installation, not just 3.11.4+.
+- Fix CI: golden tests tagged and excluded from automated runs; Linux build
+  job now installs required GTK3 dev headers.
+
 ## 0.2.0
 
 - **Breaking**: `progressColor` internal field replaced by a true linear gradient
