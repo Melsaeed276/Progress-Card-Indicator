@@ -1,16 +1,40 @@
+# Automated publishing to pub.dev (GitHub Actions + OIDC).
+#
+# Official guide: https://dart.dev/tools/pub/automated-publishing
+#
+# Prerequisites on pub.dev (package Admin tab → Automated publishing):
+#   1. Enable publishing from GitHub Actions.
+#   2. Set Repository to: <organization>/<repository>
+#      (this project: Melsaeed276/Progress-Card-Indicator).
+#   3. Set a tag pattern containing {{version}}. This repo uses v{{version}},
+#      so release tags look like v0.2.0 and must match `version:` in pubspec.yaml.
+#
+# Pub.dev only allows automated publishing when the workflow is triggered by
+# pushing a git tag (not by arbitrary branch pushes). Typical release flow:
+#   git tag vX.Y.Z && git push origin vX.Y.Z
+#
+# Security: anyone who can push a matching tag can trigger publishing. Use
+# GitHub tag protection rules and/or require a Deployment Environment on pub.dev
+# (see the guide: "Hardening security").
+#
+# The publish job uses dart-lang/setup-dart's reusable workflow (recommended).
+
 name: Publish to pub.dev
 
-# Triggers when a version tag is pushed from main (e.g. v0.2.1).
-# pub.dev OIDC only accepts push events — workflow_run is not supported.
 on:
   push:
     tags:
+      # Must match the tag pattern configured on pub.dev. For v{{version}}:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+      # For pattern {{version}} without a v prefix, use:
+      # - '[0-9]+.[0-9]+.[0-9]+'
+      # Monorepo per-package example:
+      # - 'progress_card-v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  # Gate: all checks must pass before we attempt to publish.
-  # This mirrors ci.yml so a bad commit can never reach pub.dev via a tag.
-  test:
+  # Optional gate: fail before OIDC publish if analyze/tests fail.
+  # The reusable publish workflow also runs `dart pub publish --dry-run`.
+  pre_publish_checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,10 +46,15 @@ jobs:
       - run: flutter test --exclude-tags golden
       - run: flutter pub publish --dry-run
 
-  # Publish only after test passes — uses OIDC (no stored secrets needed).
-  # pub.dev validates: repo = Melsaeed276/Progress-Card-Indicator, tag = v{{version}}
   publish:
-    needs: test
+    needs: pre_publish_checks
     permissions:
+      # Required for OIDC (temporary GitHub-signed token for pub.dev).
       id-token: write
     uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+    # If pub.dev requires a GitHub Actions environment, create it in the repo
+    # (e.g. name `pub.dev`) and uncomment:
+    # with:
+    #   environment: pub.dev
+    # For a package in a subdirectory only:
+    #   working-directory: path/to/package
