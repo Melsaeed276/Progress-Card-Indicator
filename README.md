@@ -1,17 +1,39 @@
 # progress_card
 
-A new Flutter project.
+A customizable bordered progress card widget for Flutter.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Rounded border progress indicator around any child widget
+- Configurable progress gradient, track color, and surface colors
+- Lightweight API for embedding in dashboards, summaries, and cards
 
-A few resources to get you started if this is your first Flutter project:
+## Usage
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```dart
+import 'package:progress_card/progress_card.dart';
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+BorderProgressCard(
+  percentage: 0.65,
+  strokeWidth: 8,
+  borderRadius: 14,
+  progressStartColor: const Color(0xFF7F77DD),
+  progressEndColor: const Color(0xFF1D9E75),
+  child: const Padding(
+    padding: EdgeInsets.all(20),
+    child: Text('65%'),
+  ),
+)
+```
+
+## Example app
+
+A full showcase app is provided in the `example/` folder.
+
+Run it with:
+
+```bash
+cd example
+flutter pub get
+flutter run
+```
