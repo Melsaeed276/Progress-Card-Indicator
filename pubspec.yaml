@@ -1,6 +1,10 @@
 name: progress_card
 description: "A customizable bordered progress card widget for Flutter."
 version: 0.1.0
+homepage: https://github.com/Melsaeed276/Progress-Card-Indicator
+repository: https://github.com/Melsaeed276/Progress-Card-Indicator
+issue_tracker: https://github.com/Melsaeed276/Progress-Card-Indicator/issues
+documentation: https://github.com/Melsaeed276/Progress-Card-Indicator#readme
 
 environment:
   sdk: ^3.11.4
@@ -14,3 +18,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+
+topics:
+  - flutter
+  - progress
+  - card
+  - custom-painter
+  - ui-widget

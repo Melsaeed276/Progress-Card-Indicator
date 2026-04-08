@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 
 /// A content card with a rounded border progress indicator around it.
+///
+/// The progress border is painted clockwise around a rounded rectangle,
+/// starting near the top-left corner.
 class BorderProgressCard extends StatelessWidget {
-  /// Progress value from 0.0 to 1.0.
+  /// Progress value from `0.0` to `1.0`.
+  ///
+  /// Values outside this range are clamped.
   final double percentage;
 
   /// Child shown inside the card.
   final Widget child;
 
   /// Stroke width of the outer progress border.
+  ///
+  /// Must be greater than `0`.
   final double strokeWidth;
 
   /// Radius used for both inner card and outer progress shape.
+  ///
+  /// Must be greater than or equal to `0`.
   final double borderRadius;
 
   /// Gradient start color for progress.
@@ -40,7 +49,8 @@ class BorderProgressCard extends StatelessWidget {
     this.trackColor = const Color(0xFFECECEC),
     this.surfaceColor = Colors.white,
     this.innerBorderColor = const Color(0xFFECECEC),
-  });
+  })  : assert(strokeWidth > 0, 'strokeWidth must be greater than 0'),
+        assert(borderRadius >= 0, 'borderRadius must be >= 0');
 
   @override
   Widget build(BuildContext context) {

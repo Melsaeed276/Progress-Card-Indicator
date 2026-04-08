@@ -2,11 +2,20 @@
 
 A customizable bordered progress card widget for Flutter.
 
+[![pub package](https://img.shields.io/pub/v/progress_card.svg)](https://pub.dev/packages/progress_card)
+
 ## Features
 
 - Rounded border progress indicator around any child widget
 - Configurable progress gradient, track color, and surface colors
 - Lightweight API for embedding in dashboards, summaries, and cards
+
+## Install
+
+```yaml
+dependencies:
+  progress_card: ^0.1.0
+```
 
 ## Usage
 
@@ -26,6 +35,12 @@ BorderProgressCard(
 )
 ```
 
+## API Notes
+
+- `percentage` is clamped to `0.0..1.0`.
+- Progress is drawn clockwise from the top-left edge.
+- `progressStartColor` and `progressEndColor` are interpolated based on `percentage`.
+
 ## Example app
 
 A full showcase app is provided in the `example/` folder.
@@ -37,3 +52,7 @@ cd example
 flutter pub get
 flutter run
 ```
+
+## License
+
+MIT - see [`LICENSE`](LICENSE).
