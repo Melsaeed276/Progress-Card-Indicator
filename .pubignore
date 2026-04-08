@@ -1,6 +1,9 @@
 # Files excluded from the pub.dev package.
-# Dotfiles (.dart_tool, .git, .idea, .github, .DS_Store) and build/ are
-# already excluded automatically by pub — only non-dotfile extras are listed here.
+# Dotfiles (.dart_tool, .git, .idea, .github, .DS_Store) are excluded by pub.
+# Explicitly ignore build outputs so local `flutter test` / `flutter build`
+# artifacts never inflate the published tarball.
+build/
+**/build/
 
 # Screenshots used in the README (binary blobs, not needed by consumers).
 doc/
